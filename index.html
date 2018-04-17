@@ -1,0 +1,32 @@
+<hml>
+    <head>
+            <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+    </head>
+    <body>
+        <div id="svgdiv">
+        <embed id="map" src="risk.svg" type="image/svg+xml"></embed>
+        </div>
+
+        <script>
+            var embed = document.getElementById('map');
+            embed.addEventListener('load', function()
+            {
+                var svg = embed.getSVGDocument();
+                var countries;
+                countries = svg.getElementsByClassName('country');
+                
+                for( var i = 0; i < countries.length; i++ ) {
+                    countries[i].addEventListener('click', function (evt){
+                        console.log('click');
+                    } );
+                }
+
+            });
+
+            $(document).ready(function() {
+            });
+
+        </script>
+    </body>
+
+</hml>
