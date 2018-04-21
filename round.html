@@ -5,7 +5,8 @@
     <body>
     <select id="team">
         <option value="team1">team1</option>
-        <option value="team2">team2</option>
+        <option value="team2" selected="selected">team2</option>
+        <option value="team3">team3</option>
     </select>
     <button id="generate">Generate</button>
     <h1>Bearingpoint RISK IT</h1>        
@@ -25,10 +26,13 @@
                         <th>stakeholders</th>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td><select id="round1objective1from"></select></td>
+                        <td><select id="round1objective1to"></select></td>
+                        <td><div id="round1objective1route"></div></td>
                     </tr>
                 </table>
+
+
             </div>
         <h2>Stakeholder</h2>
         <h2>Risks</h2>
@@ -40,5 +44,84 @@
     <div class="round" id="round3">
 
     </div>
+    <script>
+
+        $(document).ready(()=>{
+            
+            var team = $('#team').val();
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:3000/teams/get/" + team,
+                "method": "GET"
+            }
+
+            $('#round1objective1from').empty();
+            $.ajax(settings).done(function (response) {
+                populateContinentTerritories('#round1objective1from', response);
+            });
+
+            settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:3000/territories/get/",
+                "method": "GET"
+            }
+
+            $('#round1objective1to').empty();
+            $.ajax(settings).done(function (response) {
+                populateContinentTerritories('#round1objective1to', response);
+            });
+
+        });
+
+        $('#round1objective1to').change(()=> {
+            displayTerritoryRoute();
+        });
+
+        $('#round1objective1from').change(()=> {
+            displayTerritoryRoute();
+        });
+
+        function displayTerritoryRoute(){
+            var route = "";
+            var from = $('#round1objective1from').val();
+            var to = $('#round1objective1to').val();
+            
+            if(from !== "" && to !== "") {
+                getTerrorityRoute(from, to, function (data){
+                    route = JSON.stringify(data);
+                    $('#round1objective1route').html(route);
+                });
+            }
+        }
+
+        function getTerrorityRoute(from, to, callback) {
+            settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:3000/routes/" + from + "/" + to,
+                "method": "GET"
+            }
+
+            $.ajax(settings).done(function (response) {
+                callback(response);
+            });
+        }
+
+        function populateContinentTerritories(selectinput,response,selected) {
+            // init with empty for triggering new group on first round
+            var optcontinent = $('<optgroup label=""><option value="">select a territory</option></optgroup');
+
+            $.each(response, function (key,value){
+                if(optcontinent.attr('label') != value.continent){
+                    
+                    $(selectinput).append(optcontinent);
+                    optcontinent = $('<optgroup label="' + value.continent + '"></optgroup');
+                }
+                optcontinent.append('<option value="' + key + '" ' + (selected !== undefined && selected===key ? 'selected':'') + '>' + value.display + '</option>');
+            });
+        }
+    </script>
     </body>
 </html>
