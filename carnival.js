@@ -7,7 +7,6 @@ function roundDomReady(){
         "method": "GET"
     }
 
-    $('#round1objective1from').empty();
     $.ajax(settings).done(function (response) {
         populateContinentTerritories('#round1objective1from', response);
     });
@@ -19,13 +18,13 @@ function roundDomReady(){
         "method": "GET"
     }
 
-    $('#round1objective1to').empty();
     $.ajax(settings).done(function (response) {
         populateContinentTerritories('#round1objective1to', response);
     });
 }
 
 function populateContinentTerritories(selectinput,response,selected) {
+    $(selectinput).empty();
     // init with empty for triggering new group on first round
     var optcontinent = $('<optgroup label=""><option value="">select a territory</option></optgroup');
 
@@ -36,5 +35,18 @@ function populateContinentTerritories(selectinput,response,selected) {
             optcontinent = $('<optgroup label="' + value.continent + '"></optgroup');
         }
         optcontinent.append('<option value="' + key + '" ' + (selected !== undefined && selected===key ? 'selected':'') + '>' + value.display + '</option>');
+    });
+}
+
+function getTerritory(territory, callback){
+    settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://localhost:3000/territories/get/" + territory,
+        "method": "GET"
+    }
+
+    $.ajax(settings).done(function (response) {
+        callback(response);
     });
 }

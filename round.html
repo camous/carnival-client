@@ -1,6 +1,8 @@
 <hml>
     <head>
             <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+            <link rel="stylesheet" type="text/css" href="carnival.css">
             <script src='carnival.js'></script>
     </head>
     <body>
@@ -11,41 +13,46 @@
     </select>
     <button id="generate">Generate</button>
     <h1>Bearingpoint RISK IT</h1>        
+    <h2>Round #1</h2>
     <div class="round" id="round1">
         <form id="round1">
-        <h2>SMART Objectives</h2>
+        <h3>SMART Objectives</h3>
         <span id="round1objectivespoints">0</span> remaining points
         <p>
             <ul>
-            <li>Each objective has a minimum cost of <span id="objectivecost">0</span></li>
-            <li>Each non-objective freeze resources on it  ?</li>
+                <li>Each objective has a minimum cost of <span id="objectivecost">0</span></li>
+                <li>Each non-objective freeze resources on it  ?</li>
             </ul>
         </p>
             <div>
                 <table>
                     <tr>
+                        <th>#</th>
                         <th>from</th>
                         <th>to</th>
                         <th>measurable</th>
                         <th>achievable</th>
                         <th>realistic</th>
                         <th>time/speed</th>
+                        <th>route</th>
                     </tr>
                     <tr>
+                        <td>1</td>
                         <td><select id="round1objective1from"></select></td>
                         <td><select id="round1objective1to"></select></td>
                         <td><select id="round1objective1resourcecount"></select></td>
-                        <td>achievable</td>
-                        <td>realistic</td>
+                        <td><i class="far fa-frown"></i><i class="far fa-meh"></i><i class="far fa-smile"></i></td>
+                        <td><i class="far fa-frown"></i><i class="far fa-meh"></i><i class="far fa-smile"></i></td>
                         <td>time/speed</td>
+                        <td><div class="routedetails" id="round1objective1route"></div></td>
                     </tr>
                 </table>
             </div>
             <div>
-                <div id="round1objective1route"></div>
+                
             </div>
-        <h2>Stakeholder</h2>
-        <h2>Risks</h2>
+        <h3>Stakeholder</h3>
+        <h3>Risks</h3>
         </form>
     </div>
     <div class="round" id="round2">
@@ -80,6 +87,13 @@
 
         $('#round1objective1from').change(()=> {
             displayTerritoryRoute();
+            getTerritory($('#round1objective1from').val(), function (result){
+                $('#round1objective1resourcecount').empty();
+
+                for(var i=1; i <= result.count; i++){    
+                    $('#round1objective1resourcecount').append($('<option>' + i+ '</option>'));
+                }
+            });
         });
 
         function displayTerritoryRoute(){
@@ -90,7 +104,20 @@
             if(from !== "" && to !== "") {
                 getTerrorityRoute(from, to, function (data){
                     route = JSON.stringify(data);
-                    $('#round1objective1route').html(route);
+                    
+                    var ul = $('<ul></ul>');
+                    
+                    $.each(data.territories, function (key,value){
+                        var display;
+                        if(value.count !== undefined){
+                            display = value.display + ' / ' + value.team + '(' + value.count + ')';
+                        } else {
+                            display = value.display;
+                        }
+                        ul.append('<ol>' + display + '</ol>');
+                    });
+                    
+                    $('#round1objective1route').html(ul);
                 });
             }
         }
