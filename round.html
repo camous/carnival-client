@@ -12,6 +12,9 @@
         <option value="team3">team3</option>
     </select>
     <button id="generate">Generate</button>
+    <div style="font-size:3em; color:Tomato">
+            <i class="fas fa-chess-bishop"></i>
+        </div>
     <h1>Bearingpoint RISK IT</h1>        
     <h2>Round #1</h2>
     <div class="round" id="round1">
@@ -25,7 +28,7 @@
             </ul>
         </p>
             <div>
-                <table>
+                <table id="round1objectives" class="objectives">
                     <tr>
                         <th>#</th>
                         <th>from</th>
@@ -36,17 +39,19 @@
                         <th>time/speed</th>
                         <th>route</th>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td><select id="round1objective1from"></select></td>
-                        <td><select id="round1objective1to"></select></td>
-                        <td><select id="round1objective1resourcecount"></select></td>
+                    <tr id="objectivetemplate">
+                        <td><span id="%domobjectiveid%id"></span></td>
+                        <td><select id="%domobjectiveid%from"></select></span></td>
+                        <td><select id="%domobjectiveid%to"></select></span></td>
+                        <td><select id="%domobjectiveid%resourcecount"></select></td>
                         <td><i class="far fa-frown"></i><i class="far fa-meh"></i><i class="far fa-smile"></i></td>
                         <td><i class="far fa-frown"></i><i class="far fa-meh"></i><i class="far fa-smile"></i></td>
-                        <td>time/speed</td>
-                        <td><div class="routedetails" id="round1objective1route"></div></td>
+                        <td><input id="%domobjectiveid%time" type="number"/></td>
+                        <td><div class="routedetails" id="%domobjectiveid%route"></div></td>
+                        <td><i id="%domobjectiveid%edit" class="fas fa-edit"></i><i id="%domobjectiveid%save" class="fas fa-save actionsave"></i><i id="%domobjectiveid%delete" class="far fa-trash-alt"></i></td>
                     </tr>
                 </table>
+                <i id="round1addobjective" class="fas fa-plus-circle"> new objective</i>
             </div>
             <div>
                 
@@ -96,44 +101,6 @@
             });
         });
 
-        function displayTerritoryRoute(){
-            var route = "";
-            var from = $('#round1objective1from').val();
-            var to = $('#round1objective1to').val();
-            
-            if(from !== "" && to !== "") {
-                getTerrorityRoute(from, to, function (data){
-                    route = JSON.stringify(data);
-                    
-                    var ul = $('<ul></ul>');
-                    
-                    $.each(data.territories, function (key,value){
-                        var display;
-                        if(value.count !== undefined){
-                            display = value.display + ' / ' + value.team + '(' + value.count + ')';
-                        } else {
-                            display = value.display;
-                        }
-                        ul.append('<ol>' + display + '</ol>');
-                    });
-                    
-                    $('#round1objective1route').html(ul);
-                });
-            }
-        }
-
-        function getTerrorityRoute(from, to, callback) {
-            settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:3000/routes/" + from + "/" + to,
-                "method": "GET"
-            }
-
-            $.ajax(settings).done(function (response) {
-                callback(response);
-            });
-        }
     </script>
     </body>
 </html>

@@ -3,5 +3,24 @@ body {
 }
 
 .routedetails {
-    background-color: aqua;
+}
+
+.actionsave{
+    display: none;
+}
+
+#objectivetemplate {
+    display: none;
+}
+
+.objective {
+
+}
+
+.objectivedirty {
+    background-color:lightblue;
+}
+
+.objectives{
+    width: 100%;
 }
