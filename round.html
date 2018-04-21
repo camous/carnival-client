@@ -1,6 +1,7 @@
 <hml>
     <head>
             <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+            <script src='carnival.js'></script>
     </head>
     <body>
     <select id="team">
@@ -12,8 +13,14 @@
     <h1>Bearingpoint RISK IT</h1>        
     <div class="round" id="round1">
         <form id="round1">
-        <h2>Objectives</h2>
+        <h2>SMART Objectives</h2>
         <span id="round1objectivespoints">0</span> remaining points
+        <p>
+            <ul>
+            <li>Each objective has a minimum cost of <span id="objectivecost">0</span></li>
+            <li>Each non-objective freeze resources on it  ?</li>
+            </ul>
+        </p>
             <div>
                 <table>
                     <tr>
@@ -23,16 +30,19 @@
                         <th>achievable</th>
                         <th>realistic</th>
                         <th>time/speed</th>
-                        <th>stakeholders</th>
                     </tr>
                     <tr>
                         <td><select id="round1objective1from"></select></td>
                         <td><select id="round1objective1to"></select></td>
-                        <td><div id="round1objective1route"></div></td>
+                        <td><select id="round1objective1resourcecount"></select></td>
+                        <td>achievable</td>
+                        <td>realistic</td>
+                        <td>time/speed</td>
                     </tr>
                 </table>
-
-
+            </div>
+            <div>
+                <div id="round1objective1route"></div>
             </div>
         <h2>Stakeholder</h2>
         <h2>Risks</h2>
@@ -47,32 +57,21 @@
     <script>
 
         $(document).ready(()=>{
-            
+            roundDomReady();
+        });
+
+        $('#generate').click(()=>{
             var team = $('#team').val();
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:3000/teams/get/" + team,
-                "method": "GET"
-            }
-
-            $('#round1objective1from').empty();
-            $.ajax(settings).done(function (response) {
-                populateContinentTerritories('#round1objective1from', response);
-            });
-
             settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:3000/territories/get/",
-                "method": "GET"
+                "url": "http://localhost:3000/teams/generate/" + team,
+                "method": "POST"
             }
 
-            $('#round1objective1to').empty();
             $.ajax(settings).done(function (response) {
-                populateContinentTerritories('#round1objective1to', response);
+                console.log(response);
             });
-
         });
 
         $('#round1objective1to').change(()=> {
@@ -106,20 +105,6 @@
 
             $.ajax(settings).done(function (response) {
                 callback(response);
-            });
-        }
-
-        function populateContinentTerritories(selectinput,response,selected) {
-            // init with empty for triggering new group on first round
-            var optcontinent = $('<optgroup label=""><option value="">select a territory</option></optgroup');
-
-            $.each(response, function (key,value){
-                if(optcontinent.attr('label') != value.continent){
-                    
-                    $(selectinput).append(optcontinent);
-                    optcontinent = $('<optgroup label="' + value.continent + '"></optgroup');
-                }
-                optcontinent.append('<option value="' + key + '" ' + (selected !== undefined && selected===key ? 'selected':'') + '>' + value.display + '</option>');
             });
         }
     </script>
