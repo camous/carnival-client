@@ -1,30 +1,38 @@
 <hml>
     <head>
             <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+            <script src='map.js'></script>
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+            <script src='https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js'></script>
+            <link rel="stylesheet" type="text/css" href="carnival.css">
     </head>
     <body>
-        <div id="svgdiv">
-        <embed id="map" src="risk.svg" type="image/svg+xml"></embed>
+        <div id="body">
+            <div id="teams">
+                <div id="territories"></div></div>
+                <image id="map" src="risk.svg" type="image/svg+xml"></image>
         </div>
 
         <script>
-            var embed = document.getElementById('map');
-            embed.addEventListener('load', function()
-            {
-                var svg = embed.getSVGDocument();
-                var countries;
-                countries = svg.getElementsByClassName('country');
+            // var embed = document.getElementById('map');
+            // embed.addEventListener('load', function()
+            // {
+            //     var svg = embed.getSVGDocument();
+            //     var countries;
+            //     countries = svg.getElementsByClassName('country');
                 
-                for( var i = 0; i < countries.length; i++ ) {
-                    countries[i].addEventListener('click', function (evt){
-                        console.log('click');
-                    } );
-                }
+            //     for( var i = 0; i < countries.length; i++ ) {
+            //         countries[i].addEventListener('click', function (evt){
+            //             console.log('click');
+            //         } );
+            //     }
 
-            });
+            // });
 
-            $(document).ready(function() {
-            });
+            // $(document).ready(function() {
+            // });
+
+            refreshTeamLocalization();
 
         </script>
     </body>

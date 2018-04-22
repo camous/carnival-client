@@ -5,11 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach",
+            "name": "Round",
             "type": "chrome",
             "request": "attach",
             "port": 9222,
             "url": "http://192.168.0.45:8080/round.html",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Index",
+            "type": "chrome",
+            "request": "attach",
+            "port": 9222,
+            "url": "http://192.168.0.45:8080/index.html",
             "webRoot": "${workspaceFolder}"
         }
     ]

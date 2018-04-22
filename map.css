@@ -1,0 +1,16 @@
+body {
+    font-family: 'Lato', Helvetika, Calibri, Arial, sans-serif;
+}
+
+#body {
+    width: 100%;
+}
+
+#teams {
+    float: left;
+    width: 20%;
+}
+
+#map {
+    float: left;
+}

@@ -1,12 +1,17 @@
 var team;
+var teamicons;
 
 function roundDomReady(){
     team = $('#team').val();
     var roundid = 1;
 
-    loadObjectives(roundid, team, function(objectives){
-        $.each(objectives, function (key, value){
-            displayObjective(roundid, key, value);
+    loadTeamIcons(function(icons){
+        teamicons = icons;
+
+        loadObjectives(roundid, team, function(objectives){
+            $.each(objectives, function (key, value){
+                displayObjective(roundid, key, value);
+            });
         });
     });
 
@@ -14,6 +19,20 @@ function roundDomReady(){
         newObjective(roundid);
     });
 
+}
+
+function loadTeamIcons(callback){
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://localhost:3000/teams/icons",
+        "method": "GET",
+        "headers": {}
+      }
+      
+      $.ajax(settings).done(function (response) {
+        callback(response);
+      });
 }
 
 function loadDomTerritories(roundid, objectiveid){
@@ -87,6 +106,7 @@ function displayObjective(roundid, objectiveid, objective, caller){
     selectOrInsertOption('#' + domobjectiveid + 'from',objective.from );
     $('#' + domobjectiveid + 'from').change(function(event){
         displayTerritoryRoute(domobjectiveid);
+        loadResourceCount(domobjectiveid);
     });
     selectOrInsertOption('#' + domobjectiveid + 'to',objective.to );
     $('#' + domobjectiveid + 'to').change(function(event){
@@ -142,10 +162,29 @@ function editDomObjective(event){
     var dom = getDomObjectives(event.toElement.id);
 
     loadDomTerritories(dom.roundid, dom.objectiveid);
+    loadResourceCount(dom.baseid);
 
     $('#' + dom.baseid + 'edit').toggle();
     $('#' + dom.baseid + 'save').toggle();
     $('#' + dom.baseid).removeClass('objective').addClass('objectivedirty');
+}
+
+function loadResourceCount(domobjectiveid){
+    getTerritory($('#' + domobjectiveid + 'from').val(), function(territory){
+        if(territory.count !== undefined){
+            var select = $('#' + domobjectiveid + 'resourcecount');
+            var icons = $('#' + domobjectiveid + 'resourcecounticons');
+            icons.empty();
+
+            var currentvalue = parseInt(select.val());
+            select.empty();
+
+            for(var i=1; i <= territory.count; i++){    
+                select.append($('<option ' + (currentvalue === i ? 'selected' : '') + '>' + i + '</option>'));
+                icons.append('<i class="fas fa-chess-bishop"></i>');
+            }
+        }
+    });
 }
 
 function emptyDomObjectives(roundid) {
@@ -269,7 +308,11 @@ function displayTerritoryRoute(objectiveid){
             $.each(data.territories, function (key,value){
                 var display;
                 if(value.count !== undefined){
-                    display = value.display + ' / ' + value.team + '(' + value.count + ')';
+
+                    display = value.display + ' ';
+                    for(var i=1;i<= value.count;i++){
+                        display += '<i class="' + teamicons[value.team] + '"></i>';
+                    }
                 } else {
                     display = value.display;
                 }
